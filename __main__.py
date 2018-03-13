@@ -2,12 +2,11 @@ import os
 import configparser
 from shutil import rmtree
 
-from .chunkers import make_PhraseChunker
-from .filters import PythonFormatFilter, make_EdgecaseFilter, HTMLFilter
+from . import chunkers
+from . import filters
 from .check import Check
 from enchant import DictWithPWL
 from enchant.checker import SpellChecker
-from enchant.tokenize import HTMLChunker, URLFilter
 
 # TODO: aus config-file lesen
 # TODO: packaging
@@ -18,32 +17,56 @@ from enchant.tokenize import HTMLChunker, URLFilter
 
 config = configparser.ConfigParser()
 config.read('/home/koebi/github/potypo/potypo/setup.cfg')
+conf = config['potypo']
+
+chunker_list = []
+for chunker in conf['chunkers'].strip().split(","):
+    if "." in chunker:
+        components = chunker.rsplit('.',1)
+        mod = __import__(components[0], fromlist=[components[1]])
+        class_object = getattr(mod, components[1])
+    else:
+        class_object = getattr(chunkers, chunker)
+
+    chunker_list.append(class_object)
+
+filter_list = []
+for f in conf['filters'].strip().split(","):
+    if "." in f:
+        components = f.rsplit('.',1)
+        mod = __import__(components[0], fromlist=[components[1]])
+        class_object = getattr(mod, components[1])
+    else:
+        class_object = getattr(filters, f)
+
+    filter_list.append(class_object)
+
 
 def errmsg(outputfile, path, linenum, word):
     print("ERROR: {}:{}: {}".format(path, linenum, word))
     outputfile.write("ERROR: {}:{}: {}\n".format(path, linenum, word))
 
 try:
-    print('Creating build directory at', config['potypo']['build_dir'])
-    os.mkdir(config['potypo']['build_dir'])
+    print('Creating build directory at', conf['build_dir'])
+    os.mkdir(conf['build_dir'])
 except FileExistsError:
-    print("File or directory", config['potypo']['build_dir'], "already exists, deleting")
-    rmtree(config['potypo']['build_dir'])
+    print("File or directory", conf['build_dir'], "already exists, deleting")
+    rmtree(conf['build_dir'])
     print('Recreating build directory')
-    os.mkdir(config['potypo']['build_dir'])
+    os.mkdir(conf['build_dir'])
     print('Build directory created')
 
 # checks contains one Check-Object for every po-file
 checks = []
 
-for root, dirs, files in os.walk(config['potypo']['locales_dir']):
+for root, dirs, files in os.walk(conf['locales_dir']):
     for f in files:
         if f.endswith(".po"):
-            checks.append(Check(os.path.join(root, f), config['potypo']['build_dir'], config['potypo']['ignores_dir'], config['potypo']['chunkers'], config['potypo']['filters']))
+            checks.append(Check(os.path.join(root, f), conf['build_dir'], conf['ignores_dir'], chunker_list, filter_list))
 
-en_dict = DictWithPWL(config['potypo']['default_language'], pwl='./ignore_en.txt')
-en_ckr = spellchecker(en_dict, chunkers=config['potypo']['chunkers'], filters=config['potypo']['filters'])
-output_file = open(os.path.join(config['potypo']['build_dir'], 'en_output.txt'), 'w')
+en_dict = DictWithPWL(conf['default_language'], pwl='./ignore_en.txt')
+en_ckr = SpellChecker(en_dict, chunkers=chunker_list, filters=filter_list)
+output_file = open(os.path.join(conf['build_dir'], 'en_output.txt'), 'w')
 
 for c in checks:
     for entry in c.po:
