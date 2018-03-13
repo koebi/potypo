@@ -22,7 +22,7 @@ class Check:
         self.popath = path
         self.po = polib.pofile(path)
         lang = self.po.metadata["Language"]
-        ignore = self.get_ignorefile(lang, wl_dir)
+        ignore = Check.get_ignorefile(lang, wl_dir)
         check_dict = DictWithPWL(lang, pwl=ignore)
         self.checker = SpellChecker(check_dict, chunkers=chunkers, filters=filters)
         self.set_output(lang, build_dir)
@@ -33,7 +33,8 @@ class Check:
         name = 'output.txt'
         self.output_file = open(os.path.join(out_dir, name), 'a')
 
-    def get_ignorefile(self, lang, wl_dir):
+    @staticmethod
+    def get_ignorefile(lang, wl_dir):
         for f in os.listdir(wl_dir):
-            if lang in f:
-                return f  # as there should be only one language file
+            if lang == f.split(".")[0]:
+                return os.path.join(wl_dir, f)  # as there should be only one language file

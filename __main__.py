@@ -41,6 +41,14 @@ for f in conf['filters'].strip().split(","):
 
     filter_list.append(class_object)
 
+if 'phrases' in conf:
+    phrases = conf['phrases'].strip().split('\n')
+    chunker_list.append(chunkers.make_PhraseChunker(phrases))
+
+if 'edgecase_words' in conf:
+    words = conf['edgecase_words'].strip().split('\n')
+    filter_list.append(filters.make_EdgecaseFilter(words))
+
 
 def errmsg(outputfile, path, linenum, word):
     print("ERROR: {}:{}: {}".format(path, linenum, word))
@@ -64,7 +72,8 @@ for root, dirs, files in os.walk(conf['locales_dir']):
         if f.endswith(".po"):
             checks.append(Check(os.path.join(root, f), conf['build_dir'], conf['ignores_dir'], chunker_list, filter_list))
 
-en_dict = DictWithPWL(conf['default_language'], pwl='./ignore_en.txt')
+en_ignorefile = Check.get_ignorefile(conf['default_language'], conf['ignores_dir'])
+en_dict = DictWithPWL(conf['default_language'], pwl=en_ignorefile)
 en_ckr = SpellChecker(en_dict, chunkers=chunker_list, filters=filter_list)
 output_file = open(os.path.join(conf['build_dir'], 'en_output.txt'), 'w')
 
