@@ -8,7 +8,6 @@ from .check import Check
 from enchant import DictWithPWL
 from enchant.checker import SpellChecker
 
-# TODO: aus config-file lesen
 # TODO: packaging
 # TODO: gh + README
 # TODO: alle .po-files finden
