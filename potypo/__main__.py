@@ -8,13 +8,6 @@ from .check import Check
 from enchant import DictWithPWL
 from enchant.checker import SpellChecker
 
-# TODO: packaging
-# TODO: gh + README
-# TODO: alle .po-files finden
-# TODO: tests schreiben
-# TODO: bei typo: exit 1
-# TODO: config-option für sprachen ohne fail
-
 def main():
     config = configparser.ConfigParser()
     config.read('setup.cfg')
