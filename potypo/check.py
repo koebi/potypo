@@ -25,7 +25,8 @@ class Check:
         ignore = Check.get_ignorefile(lang, wl_dir)
         check_dict = DictWithPWL(lang, pwl=ignore)
         self.checker = SpellChecker(check_dict, chunkers=chunkers, filters=filters)
-        self.set_output(lang, build_dir)
+        if build_dir:
+            self.set_output(lang, build_dir)
 
     def set_output(self, lang, build_dir):
         out_dir = os.path.join(build_dir, lang)

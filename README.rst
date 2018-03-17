@@ -42,7 +42,7 @@ This is an example configuration for potypo.
     ignores_dir = /path/to/my/projects/ignorelists
 
     # BUILD_DIR is the directory that the output-files should be written to.
-    # If not present, the output will only be written to stdout.
+    # If empty or not present, the output will only be written to stdout.
     build_dir = /path/to/my/projects/_builddir
 
     # Because of how the spell-checking work, some words might be output as "wrong",
@@ -75,7 +75,6 @@ Current Work:
 -------------
 * if typo: exit 1
 * add config option for languages that should not fail
-* non-present build_dir config option should lead to only outputting on stdout
 * enhance README
 * find .po-files recursively?
 * move this list to issues
