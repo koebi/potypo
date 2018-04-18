@@ -41,10 +41,6 @@ This is an example configuration for potypo.
     # "en_US.txt".
     ignores_dir = /path/to/my/projects/ignorelists
 
-    # BUILD_DIR is the directory that the output-files should be written to.
-    # If empty or not present, the output will only be written to stdout.
-    build_dir = /path/to/my/projects/_builddir
-
     # Because of how the spell-checking work, some words might be output as "wrong",
     # even though they are correctly spelled. This will for example happen to
     # hyphenated words where a part is not a correct word on its own, abbreviations
