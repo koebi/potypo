@@ -9,6 +9,8 @@ Installation
 ------------
 
 potypo is available via ``pip3 install potypo``
+Note that this is not considered stable and might be subject to massive
+changes. Please do use it, and report any problems encountered :)
 
 Configuration
 -------------
@@ -24,7 +26,7 @@ This is an example configuration for potypo.
 
     [potypo]
     # This is the default language of the application, and the language that is
-    # translated from. It follows the locale tag naming scheme
+    # translated from. It follows the locale tag naming scheme.
     default_language = en_US
 
     # This is the directory that contains the .po-files.
