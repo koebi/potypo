@@ -80,4 +80,8 @@ Current Work:
 * enhance README
 * find .po-files recursively?
 * move this list to issues
-* write tests
+* finish setting up testsetup
+  * change .po-files
+  * set up setup.cfg
+  * find out how to start potypo correctly
+
