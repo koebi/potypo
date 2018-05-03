@@ -1,7 +1,7 @@
 import os
 
 import polib
-from enchant import DictWithPWL
+from enchant import DictWithPWL, Dict, errors, Broker
 from enchant.checker import SpellChecker
 
 class Check:
