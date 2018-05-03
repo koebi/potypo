@@ -1,11 +1,11 @@
-import os
+import os, sys
 import configparser
 from shutil import rmtree
 
 from . import chunkers
 from . import filters
 from .check import Check
-from enchant import DictWithPWL
+from enchant import DictWithPWL, errors
 from enchant.checker import SpellChecker
 
 def main():
@@ -53,7 +53,10 @@ def main():
     for root, dirs, files in os.walk(conf['locales_dir']):
         for f in files:
             if f.endswith(".po"):
-                checks.append(Check(os.path.join(root, f), conf['ignores_dir'], chunker_list, filter_list))
+                try:
+                    checks.append(Check(os.path.join(root, f), conf['wl_dir'], chunker_list, filter_list))
+                except errors.DictNotFoundError as err:
+                    print(err, "Potypo will not check for spelling errors in this language.")
 
     en_wordlist = Check.get_wordlist(conf['default_language'], conf['wl_dir'], conf['locales_dir'])
     en_dict = DictWithPWL(conf['default_language'], pwl=en_wordlist)
@@ -61,6 +64,7 @@ def main():
 
     fail = False # used for tracking whether failing errors occurred
     for c in checks:
+        print("Checking Errors in file", c.popath, "for lang", c.lang)
         for entry in c.po:
             if entry.obsolete:
                 continue
