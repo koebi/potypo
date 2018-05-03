@@ -55,10 +55,11 @@ def main():
             if f.endswith(".po"):
                 checks.append(Check(os.path.join(root, f), conf['ignores_dir'], chunker_list, filter_list))
 
-    en_ignorefile = Check.get_ignorefile(conf['default_language'], conf['ignores_dir'])
-    en_dict = DictWithPWL(conf['default_language'], pwl=en_ignorefile)
+    en_wordlist = Check.get_wordlist(conf['default_language'], conf['wl_dir'], conf['locales_dir'])
+    en_dict = DictWithPWL(conf['default_language'], pwl=en_wordlist)
     en_ckr = SpellChecker(en_dict, chunkers=chunker_list, filters=filter_list)
 
+    fail = False # used for tracking whether failing errors occurred
     for c in checks:
         for entry in c.po:
             if entry.obsolete:
@@ -66,15 +67,22 @@ def main():
 
             en_ckr.set_text(entry.msgid)
             for err in en_ckr:
+                fail = True
                 path = os.path.relpath(c.popath, start=config['potypo']['locales_dir'])
                 errmsg(path, entry.linenum, err.word)
 
             c.checker.set_text(entry.msgstr)
             for err in c.checker:
+                if c.lang not in conf['no_fail']:
+                    fail = True
                 path = os.path.relpath(c.popath, start=config['potypo']['locales_dir'])
                 errmsg(path, entry.linenum, err.word)
 
     print("Spell-checking done.")
+
+    if fail:
+        sys.exit(1)
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()

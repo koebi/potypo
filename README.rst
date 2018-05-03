@@ -39,7 +39,14 @@ This is an example configuration for potypo.
     # They should be named according to the language they belong to in the format
     # <lang>.txt, i.e. for the language "en_US", the file should be named
     # "en_US.txt".
-    ignores_dir = /path/to/my/projects/ignorelists
+    # They can also be placed in the language- or .po-file-directory
+    wl_dir = /path/to/my/projects/wordlists
+
+    # For easy CI-Integration, potypo will issue an exit(1) if any errors have been encountered.
+    # If there are languages for which this is not wanted, they should be added to this list.
+    no_fail =
+        fr
+        pt_BR
 
     # Because of how the spell-checking work, some words might be output as "wrong",
     # even though they are correctly spelled. This will for example happen to
@@ -69,7 +76,6 @@ This is an example configuration for potypo.
 
 Current Work:
 -------------
-* if typo: exit 1
 * add config option for languages that should not fail
 * enhance README
 * find .po-files recursively?
