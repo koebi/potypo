@@ -83,6 +83,7 @@ Current Work:
 * find .po-files recursively?
 * move this list to issues
 * finish setting up testsetup
+
   * change .po-files
   * set up setup.cfg
   * find out how to start potypo correctly
