@@ -78,7 +78,6 @@ This is an example configuration for potypo.
 
 Current Work:
 -------------
-* add config option for languages that should not fail
 * enhance README
 * find .po-files recursively?
 * move this list to issues
@@ -88,3 +87,4 @@ Current Work:
   * set up setup.cfg
   * find out how to start potypo correctly
 
+* prioritizing the best dict per language
