@@ -43,9 +43,10 @@ def main():
         words = conf['edgecase_words'].strip().split('\n')
         filter_list.append(filters.make_EdgecaseFilter(words))
 
-
     def errmsg(path, linenum, word):
         print("ERROR: {}:{}: {}".format(path, linenum, word))
+
+    wl_dir = conf.get('wl_dir', None)
 
     # checks contains one Check-Object for every po-file
     checks = []
@@ -54,11 +55,11 @@ def main():
         for f in files:
             if f.endswith(".po"):
                 try:
-                    checks.append(Check(os.path.join(root, f), conf['wl_dir'], chunker_list, filter_list))
+                    checks.append(Check(os.path.join(root, f), wl_dir, chunker_list, filter_list))
                 except errors.DictNotFoundError as err:
                     print(err, "Potypo will not check for spelling errors in this language.")
 
-    en_wordlist = Check.get_wordlist(conf['default_language'], conf['wl_dir'], conf['locales_dir'])
+    en_wordlist = Check.get_wordlist(conf['default_language'], wl_dir, conf['locales_dir'])
     en_dict = DictWithPWL(conf['default_language'], pwl=en_wordlist)
     en_ckr = SpellChecker(en_dict, chunkers=chunker_list, filters=filter_list)
 
