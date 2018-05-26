@@ -76,6 +76,15 @@ This is an example configuration for potypo.
     chunkers = enchant.tokenize.HTMLChunker
     filters = PythonFormatFilter,enchant.tokenize.URLFilter,HTMLFilter
 
+Running the tests
+-------------
+
+    pip install pytest
+    python setup.py install
+
+    pytest
+
+
 Current Work:
 -------------
 * enhance README
