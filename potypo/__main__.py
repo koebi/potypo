@@ -8,32 +8,29 @@ from .check import Check
 from enchant import DictWithPWL, errors
 from enchant.checker import SpellChecker
 
+
+def load_classes(module, config):
+    classes = []
+    for item in config.split(','):
+        item = item.strip()
+        if '.' in item:
+            components = item.rsplit('.', 1)
+            mod = __import__(components[0], fromlist=[components[1]])
+            class_object = getattr(mod, components[1])
+        else:
+            class_object = getattr(module, item)
+
+        classes.append(class_object)
+    return classes
+
+
 def main():
     config = configparser.ConfigParser()
-    config.read('setup.cfg')
+    config.read(['setup.cfg', 'tox.ini'])
     conf = config['potypo']
 
-    chunker_list = []
-    for chunker in conf['chunkers'].strip().split(","):
-        if "." in chunker:
-            components = chunker.rsplit('.',1)
-            mod = __import__(components[0], fromlist=[components[1]])
-            class_object = getattr(mod, components[1])
-        else:
-            class_object = getattr(chunkers, chunker)
-
-        chunker_list.append(class_object)
-
-    filter_list = []
-    for f in conf['filters'].strip().split(","):
-        if "." in f:
-            components = f.rsplit('.',1)
-            mod = __import__(components[0], fromlist=[components[1]])
-            class_object = getattr(mod, components[1])
-        else:
-            class_object = getattr(filters, f)
-
-        filter_list.append(class_object)
+    chunker_list = load_classes(chunkers, conf.get('chunkers', ''))
+    filter_list = load_classes(filters, conf.get('filters', ''))
 
     if 'phrases' in conf:
         phrases = conf['phrases'].strip().split('\n')
