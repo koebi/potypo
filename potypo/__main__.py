@@ -29,6 +29,14 @@ def main():
     config.read(['setup.cfg', 'tox.ini'])
     conf = config['potypo']
 
+    if 'locales_dir' not in conf:
+        print("No locales_dir specified. Aborting."
+        sys.exit(1)
+
+    if 'default_language' not in conf:
+        print("No default_language specified. Aborting."
+        sys.exit(1)
+
     chunker_list = load_classes(chunkers, conf.get('chunkers', ''))
     filter_list = load_classes(filters, conf.get('filters', ''))
 
@@ -75,7 +83,7 @@ def main():
 
             c.checker.set_text(entry.msgstr)
             for err in c.checker:
-                if c.lang not in conf['no_fail']:
+                if c.lang not in conf.get('no_fail', []):
                     fail = True
                 path = os.path.relpath(c.popath, start=config['potypo']['locales_dir'])
                 errmsg(path, entry.linenum, err.word)
