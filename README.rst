@@ -79,6 +79,8 @@ This is an example configuration for potypo.
 Running the tests
 -------------
 
+::
+
     pip install pytest
     python setup.py install
 
