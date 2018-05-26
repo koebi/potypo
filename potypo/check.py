@@ -40,13 +40,12 @@ class Check:
 
     @staticmethod
     def get_wordlist(lang, wl_dir, po_path):
-        #print("Looking for Wordlist in\nlang", lang,"\nwl_dir", wl_dir, "\npo_path",po_path)
+        #print("Looking for Wordlist in:\nlang {}\nwl_dir {}\npo_path {}".format(lang, wl_dir, po_path))
         po_path = os.path.abspath(po_path)
 
         """
-        If a directory containting wordlists is given (wl_dir), there may be a
-        file called "<lang>.txt". If this is the case, this should be the
-        wordlist we are looking for.
+        If wl_dir is given, there may be a file called "<lang>.txt". If this is
+        the case, this should be the wordlist we are looking for.
         """
         if wl_dir is not None:
             wl_path = os.path.join(wl_dir, lang + '.txt')
@@ -54,11 +53,12 @@ class Check:
                 return wl_path
 
         """
-        If no directory is given, the wordlist should live in a file named
-        "wordlist.txt" either in the locales directory (locales_dir) for the
-        default language or in the same directory as the .po-files
+        If wl_dir is not given, the wordlist should live in a file named
+        "wordlist.txt" either in the locales_dir for the default language or in
+        the same directory as the .po-files
         """
         if po_path.endswith("po"):
+            # translated language
             po_dir = os.path.dirname(po_path)
             for f in os.scandir(po_dir):
                 if f.name == "wordlist.txt":
@@ -80,8 +80,10 @@ class Check:
         #print("Checked lang-specific files")
 
         if os.path.isdir(po_path):
+            # default language
             for f in os.scandir(po_path):
                 if f.name == "wordlist.txt":
                     #print("found wordlist in", f.path)
                     return f.path
         #print("If this shows up, no wordlist was found")
+        return None
